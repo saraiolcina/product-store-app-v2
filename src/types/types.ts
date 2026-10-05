@@ -5,13 +5,17 @@ export enum StatusType {
   ERROR = "ERROR",
 }
 
+export enum SortingType {
+  ASC = "asc",
+  DESC = "desc",
+}
+
 export type Product = {
   id: number;
   title: string;
   description: string;
   images: string[];
   price: number;
-  category: string;
 };
 
 export type ProductResponse = {

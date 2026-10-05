@@ -1,12 +1,22 @@
 import { useState, useCallback, useRef } from "react";
 
-import { type Product, ProductResponse, StatusType } from "../types/types";
+import {
+  type Product,
+  type ProductResponse,
+  StatusType,
+  SortingType,
+} from "../types/types";
 
 type UseFetchDataReturnType = {
   status: StatusType;
   products: Product[];
   totalProducts: number;
-  fetchData: (skipItems: number) => Promise<void>;
+  fetchData: (
+    limitItems: number,
+    skipItems: number,
+    orderToSort: SortingType,
+    category?: string
+  ) => Promise<void>;
 };
 
 export const useFetchData = (): UseFetchDataReturnType => {
@@ -16,10 +26,17 @@ export const useFetchData = (): UseFetchDataReturnType => {
 
   const controllerRef = useRef<AbortController | null>(null);
 
-  const fetchData: (skipItems: number) => Promise<void> = useCallback(
-    async (skipItems: number) => {
-      const limit: number = 4;
-      const url: string = `https://dummyjson.com/products?limit=${limit}&skip=${skipItems}`;
+  const fetchData: (
+    limitItems: number,
+    skipItems: number,
+    orderToSort: SortingType,
+    category?: string
+  ) => Promise<void> = useCallback(
+    async (limitItems, skipItems, orderToSort, category) => {
+      const sortBy: string = "price";
+      const url: string = category
+        ? `https://dummyjson.com/products/category/${category}?limit=${limitItems}&skip=${skipItems}&sortBy=${sortBy}&order=${orderToSort}`
+        : `https://dummyjson.com/products?limit=${limitItems}&skip=${skipItems}&sortBy=${sortBy}&order=${orderToSort}`;
 
       controllerRef.current?.abort();
       const controller = new AbortController();
@@ -30,7 +47,6 @@ export const useFetchData = (): UseFetchDataReturnType => {
         const response = await fetch(url, { signal: controller.signal });
 
         if (!response.ok) {
-          setStatus(StatusType.ERROR);
           throw new Error(`An error occurred: ${response.status}`);
         }
 

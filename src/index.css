@@ -140,3 +140,24 @@ p {
   padding: 150px;
   text-align: center;
 }
+
+.filter-and-sorting-wrapper {
+  width: 350px;
+  margin-left: auto;
+  margin-right: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  select {
+    font: inherit;
+    color: inherit;
+    background-color: inherit;
+    padding: 5px;
+    border-radius: 3px;
+  }
+  button {
+    padding: 3px;
+  }
+}
