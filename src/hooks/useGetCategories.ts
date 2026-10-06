@@ -1,10 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 
+import { StatusType } from "../types/types";
+
 type UseCategoriesReturnType = {
   categories: string[];
+  categoriesStatus: StatusType;
+  fetchCategories: () => Promise<void>;
 };
 
 export const useGetCategories = (): UseCategoriesReturnType => {
+  const [categoriesStatus, setCategoriesStatus] = useState<StatusType>(
+    StatusType.INITIAL
+  );
   const [categories, setCategories] = useState<string[]>([]);
   const fetchCategoriesControllerRef = useRef<AbortController | null>(null);
 
@@ -23,12 +30,13 @@ export const useGetCategories = (): UseCategoriesReturnType => {
       }
 
       const data = await response.json();
-
       setCategories(data);
+      setCategoriesStatus(StatusType.SUCCESS);
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return;
 
       console.error(`An error occurred: ${error}`);
+      setCategoriesStatus(StatusType.ERROR);
     }
   };
 
@@ -37,5 +45,5 @@ export const useGetCategories = (): UseCategoriesReturnType => {
     return () => fetchCategoriesControllerRef.current?.abort();
   }, []);
 
-  return { categories };
+  return { categories, categoriesStatus, fetchCategories };
 };

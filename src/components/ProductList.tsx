@@ -6,12 +6,12 @@ type ProductListProps = {
   products: Product[];
 };
 
-export const ProductList = ({ products }: ProductListProps): ReactElement => {
-  const eur = new Intl.NumberFormat("en", {
-    style: "currency",
-    currency: "EUR",
-  });
+const eur = new Intl.NumberFormat("en", {
+  style: "currency",
+  currency: "EUR",
+});
 
+export const ProductList = ({ products }: ProductListProps): ReactElement => {
   return (
     <section aria-label="Product List">
       {products.map((product: Product) => {
@@ -22,6 +22,7 @@ export const ProductList = ({ products }: ProductListProps): ReactElement => {
             <img
               src={product.images[0] ?? "/placeholder.png"}
               alt={`Photo of ${product.title}`}
+              loading={"lazy"}
             />
             <p>Price: {eur.format(product.price)}</p>
           </div>

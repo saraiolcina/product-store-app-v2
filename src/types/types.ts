@@ -3,6 +3,7 @@ export enum StatusType {
   LOADING = "LOADING",
   SUCCESS = "SUCCESS",
   ERROR = "ERROR",
+  EMPTY = "EMPTY",
 }
 
 export enum SortingType {

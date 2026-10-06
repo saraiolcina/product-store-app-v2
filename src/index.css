@@ -132,7 +132,8 @@ p {
   }
 }
 
-.loading-wrapper {
+.loading-wrapper,
+.empty-wrapper {
   display: flex;
   flex-direction: column;
   font-family: Verdana, Geneva, sans-serif;
@@ -142,13 +143,21 @@ p {
 }
 
 .filter-and-sorting-wrapper {
-  width: 350px;
+  width: 500px;
   margin-left: auto;
   margin-right: 0;
 
   display: flex;
   align-items: center;
   gap: 10px;
+
+  input {
+    font: inherit;
+    color: inherit;
+    background-color: inherit;
+    padding: 5px;
+    border-radius: 3px;
+  }
 
   select {
     font: inherit;

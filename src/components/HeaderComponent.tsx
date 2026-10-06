@@ -1,8 +1,6 @@
 import { type ReactElement } from "react";
 import { ArrowUpNarrowWide, ArrowDownWideNarrow } from "lucide-react";
 
-import { useGetCategories } from "../hooks/useGetCategories";
-
 import { SortingType } from "../types/types";
 
 type HeaderProps = {
@@ -10,6 +8,9 @@ type HeaderProps = {
   handleFilterOnChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   orderToSort: SortingType;
   handleSortingButton: () => void;
+  searchValue: string;
+  handleSearchOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  categories: string[];
 };
 
 export const Header = ({
@@ -17,9 +18,10 @@ export const Header = ({
   handleFilterOnChange,
   orderToSort,
   handleSortingButton,
+  searchValue,
+  handleSearchOnChange,
+  categories,
 }: HeaderProps): ReactElement => {
-  const { categories } = useGetCategories();
-
   return (
     <div
       className="header"
@@ -27,11 +29,21 @@ export const Header = ({
       role="group"
     >
       <div className="filter-and-sorting-wrapper">
+        <input
+          type="search"
+          name="search"
+          id="search"
+          placeholder="Search a product"
+          value={searchValue}
+          onChange={handleSearchOnChange}
+          disabled={selectedCategory.length > 0}
+        />
         <select
           name="category-filter"
           id="category-filter"
           value={selectedCategory}
           onChange={handleFilterOnChange}
+          disabled={searchValue.length > 0}
         >
           <option value={""}>Category</option>
           {categories.map((category) => {
@@ -51,9 +63,9 @@ export const Header = ({
           onClick={handleSortingButton}
         >
           {orderToSort === SortingType.DESC ? (
-            <ArrowUpNarrowWide color="#f3f4f6" size={24} strokeWidth={1.5} />
+            <ArrowDownWideNarrow size={24} strokeWidth={1.5} />
           ) : (
-            <ArrowDownWideNarrow color="#f3f4f6" size={24} strokeWidth={1.5} />
+            <ArrowUpNarrowWide size={24} strokeWidth={1.5} />
           )}
         </button>
       </div>

@@ -15,7 +15,8 @@ type UseFetchDataReturnType = {
     limitItems: number,
     skipItems: number,
     orderToSort: SortingType,
-    category?: string
+    category?: string,
+    searchValue?: string
   ) => Promise<void>;
 };
 
@@ -30,13 +31,14 @@ export const useFetchData = (): UseFetchDataReturnType => {
     limitItems: number,
     skipItems: number,
     orderToSort: SortingType,
-    category?: string
+    category?: string,
+    searchValue?: string
   ) => Promise<void> = useCallback(
-    async (limitItems, skipItems, orderToSort, category) => {
+    async (limitItems, skipItems, orderToSort, category, searchValue) => {
       const sortBy: string = "price";
       const url: string = category
         ? `https://dummyjson.com/products/category/${category}?limit=${limitItems}&skip=${skipItems}&sortBy=${sortBy}&order=${orderToSort}`
-        : `https://dummyjson.com/products?limit=${limitItems}&skip=${skipItems}&sortBy=${sortBy}&order=${orderToSort}`;
+        : `https://dummyjson.com/products/search?q=${searchValue}&limit=${limitItems}&skip=${skipItems}&sortBy=${sortBy}&order=${orderToSort}`;
 
       controllerRef.current?.abort();
       const controller = new AbortController();
@@ -51,9 +53,14 @@ export const useFetchData = (): UseFetchDataReturnType => {
         }
 
         const data: ProductResponse = await response.json();
-        setProducts(data.products);
-        setTotalProducts(data.total);
-        setStatus(StatusType.SUCCESS);
+
+        if (data.products.length === 0) {
+          setStatus(StatusType.EMPTY);
+        } else {
+          setProducts(data.products);
+          setTotalProducts(data.total);
+          setStatus(StatusType.SUCCESS);
+        }
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError")
           return;
