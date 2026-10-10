@@ -35,10 +35,20 @@ export const useFetchData = (): UseFetchDataReturnType => {
     searchValue?: string
   ) => Promise<void> = useCallback(
     async (limitItems, skipItems, orderToSort, category, searchValue) => {
+      const baseUrl = "https://dummyjson.com/products";
       const sortBy: string = "price";
-      const url: string = category
-        ? `https://dummyjson.com/products/category/${category}?limit=${limitItems}&skip=${skipItems}&sortBy=${sortBy}&order=${orderToSort}`
-        : `https://dummyjson.com/products/search?q=${searchValue}&limit=${limitItems}&skip=${skipItems}&sortBy=${sortBy}&order=${orderToSort}`;
+      const params = new URLSearchParams({
+        limit: String(limitItems),
+        skip: String(skipItems),
+        sortBy,
+        order: orderToSort,
+      });
+
+      const url = category
+        ? `${baseUrl}/category/${category}?${params}`
+        : `${baseUrl}/search?${new URLSearchParams({
+            q: searchValue ?? "",
+          })}&${params}`;
 
       controllerRef.current?.abort();
       const controller = new AbortController();

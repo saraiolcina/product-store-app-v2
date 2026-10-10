@@ -37,6 +37,10 @@ export const MainView = (): ReactElement => {
     );
   }, [skipItems, orderToSort, selectedCategory, debouncedValue]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedValue]);
+
   const handlePageOnClick = (selectedPage: number): void => {
     setCurrentPage(selectedPage);
   };
@@ -70,7 +74,6 @@ export const MainView = (): ReactElement => {
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
     setSearchValue(e.target.value);
-    setCurrentPage(1);
   };
 
   const renderContent = (): ReactElement => {
@@ -84,6 +87,7 @@ export const MainView = (): ReactElement => {
       case StatusType.EMPTY:
         return <EmptyComponent />;
       case StatusType.SUCCESS:
+        if (products.length === 0) return <LoadingComponent />;
         return (
           <>
             <ProductList products={products} />
